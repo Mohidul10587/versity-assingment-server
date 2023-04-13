@@ -24,7 +24,7 @@ async function run() {
         await client.connect()
         console.log('connected')
         const usersCollection = client.db('thesis').collection('users');
-
+        const reviewCollection = client.db('thesis').collection('reviews');
 
         app.post('/createUser', async (req, res) => {
             const user = req.body;
@@ -39,12 +39,30 @@ async function run() {
         })
 
 
+        app.get('/admin/:email', async (req, res) => {
+            const email = req.params.email
+            const user = await usersCollection.findOne({ email: email });
+            const isAdmin = user.role === 'admin'
+            res.send({ admin: isAdmin })
+        })
+
         app.get('/currentUser/:currentUsersEmail', async (req, res) => {
             const email = req.params.currentUsersEmail
             const result = await usersCollection.findOne({email:email})
             res.send(result)
         })
 
+        app.post('/review', async (req, res) => {
+            const review = req.body;
+            const result = reviewCollection.insertOne(review);
+            res.send(result)
+        })
+
+        app.get('/review', async (req, res) => {
+            const cursor = reviewCollection.find({})
+            const result = await cursor.toArray();
+            res.send(result)
+        })
 
     } finally {
 
