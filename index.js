@@ -39,7 +39,6 @@ async function run() {
         })
 
 
-
         app.get('/currentUser/:currentUsersEmail', async (req, res) => {
             const email = req.params.currentUsersEmail
             const result = await usersCollection.findOne({email:email})
