@@ -48,7 +48,7 @@ async function run() {
 
         app.get('/currentUser/:currentUsersEmail', async (req, res) => {
             const email = req.params.currentUsersEmail
-            const result = await usersCollection.findOne({email:email})
+            const result = await usersCollection.findOne({ email: email })
             res.send(result)
         })
 
@@ -59,9 +59,20 @@ async function run() {
         })
 
         app.get('/review', async (req, res) => {
-            const cursor = reviewCollection.find({})
-            const result = await cursor.toArray();
-            res.send(result)
+
+            const allReview = await reviewCollection.find({}).toArray()
+            const arrayOfEmailOfReviewer = allReview.reverse().map(user => user.email);
+            const uniqueArrayOfEmailOfReviewer = Array.from(new Set(arrayOfEmailOfReviewer));
+           
+            const newArrOfReview = []
+            for (let i = 0; i < uniqueArrayOfEmailOfReviewer.length; i++) {
+                const element = uniqueArrayOfEmailOfReviewer[i];
+                const foundsReview = allReview.reverse().find(r => r.email == element)
+                newArrOfReview.push(foundsReview)
+            }
+
+
+            res.send(newArrOfReview)
         })
 
     } finally {
