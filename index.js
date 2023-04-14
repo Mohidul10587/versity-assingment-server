@@ -61,13 +61,15 @@ async function run() {
         app.get('/review', async (req, res) => {
 
             const allReview = await reviewCollection.find({}).toArray()
-            const arrayOfEmailOfReviewer = allReview.reverse().map(user => user.email);
-            const uniqueArrayOfEmailOfReviewer = Array.from(new Set(arrayOfEmailOfReviewer));
+            const reverseAllReview = allReview.reverse()
 
+            const arrayOfEmailOfReviewer = reverseAllReview.map(user => user.email);
+            const uniqueArrayOfEmailOfReviewer = Array.from(new Set(arrayOfEmailOfReviewer));
+        
             const newArrOfReview = []
             for (let i = 0; i < uniqueArrayOfEmailOfReviewer.length; i++) {
                 const element = uniqueArrayOfEmailOfReviewer[i];
-                const foundsReview = allReview.reverse().find(r => r.email == element)
+                const foundsReview = reverseAllReview.find(r => r.email == element)
                 newArrOfReview.push(foundsReview)
             }
 
